@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Chat con IA</title>
+  <style>
+    body { font-family: sans-serif; max-width: 600px; margin: auto; padding: 2em; }
+    .chat { border: 1px solid #ccc; padding: 1em; height: 300px; overflow-y: scroll; background: #f9f9f9; }
+    .message { margin: 0.5em 0; }
+    .user { font-weight: bold; }
+    .form-container { display: flex; gap: 0.5em; margin-top: 1em; }
+    input[type="text"] { flex: 1; padding: 0.5em; }
+    button { padding: 0.5em 1em; }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+  <h1>Chat con IA</h1>
+  <div class="chat" id="chat"></div>
+  <form id="form" class="form-container">
+    <input type="text" id="text" placeholder="Escribe un mensaje..." required>
+    <button type="submit">Enviar</button>
+  </form>
+
+  <script>
+    async function cargarMensajes() {
+      const res = await fetch('http://localhost:3000/messages');
+      const mensajes = await res.json();
+      const chat = document.getElementById('chat');
+      chat.innerHTML = '';
+      mensajes.forEach(m => {
+        const html = marked.parse(m.text); // Convierte de Markdown a HTML
+        chat.innerHTML += `<div class="message"><span class="user">${m.user}:</span> ${html}</div>`;
+      });
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    document.getElementById('form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const textInput = document.getElementById('text');
+      const text = textInput.value;
+      textInput.value = '';
+
+      const chat = document.getElementById('chat');
+      chat.innerHTML += `<div class="message"><span class="user">Tú:</span> ${text}</div>`;
+      chat.scrollTop = chat.scrollHeight;
+
+      // Enviar mensaje y mostrar respuesta directamente
+      const res = await fetch('http://localhost:3000/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user: 'Tú', text })
+      });
+
+      const respuestaIA = await res.json();
+      const html = marked.parse(respuestaIA.text); // Convierte la respuesta de la IA de Markdown a HTML
+      chat.innerHTML += `<div class="message"><span class="user">IA:</span> ${html}</div>`;
+      chat.scrollTop = chat.scrollHeight;
+    });
+
+    cargarMensajes();
+    setInterval(cargarMensajes, 5000); // Sincronizar cada 5 segundos por si hay más usuarios
+  </script>
+</body>
+</html>
