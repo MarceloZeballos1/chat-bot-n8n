@@ -1,0 +1,142 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    background-color: #f4f6f9;
+  }
+  
+  .ucb-header {
+    background-color: #112849;
+    color: white;
+    text-align: center;
+    padding: 1em;
+  }
+  
+  #ucb-logo {
+    width: 20%; 
+    height: auto;
+    opacity: 0;
+    animation: fadeIn 1.5s ease-out forwards;
+    margin-bottom: 20px; 
+  }
+  
+  
+  @keyframes fadeIn {
+    0% { opacity: 0; transform: translateY(-20px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }  
+  
+  .ucb-header h1 {
+    margin: 0.2em 0;
+    font-size: 1.8em;
+  }
+  
+  .ucb-header h2 {
+    margin: 0;
+    font-weight: normal;
+    font-size: 1.1em;
+  }
+  
+  .chat-container {
+    max-width: 700px;
+    margin: auto;
+    padding: 1.5em;
+    background-color: white;
+    box-shadow: 0 0 8px rgba(0,0,0,0.1);
+    margin-top: 2em;
+    border-radius: 8px;
+  }
+  
+  .chat {
+    border: 1px solid #ccc;
+    padding: 1em;
+    height: 300px;
+    overflow-y: auto;
+    background: #f9f9f9;
+    border-radius: 4px;
+  }
+  
+  .message {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: slideUp 0.5s forwards;
+  }
+  
+  @keyframes slideUp {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  
+  .message:nth-child(even) {
+    animation-delay: 0.1s;
+  }
+  
+  .message:nth-child(odd) {
+    animation-delay: 0.3s;
+  }  
+  
+  .user {
+    font-weight: bold;
+    color: #112849;
+  }
+  
+  .form-container {
+    opacity: 0.9;
+    transition: opacity 0.3s ease;
+  }
+  
+  .form-container:hover {
+    opacity: 1;
+  }  
+  
+  input[type="text"] {
+    flex: 1;
+    padding: 0.6em;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  button {
+    padding: 0.5em 1em;
+    background-color: #F7BE00;
+    border: none;
+    color: white;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s ease;
+  }
+  
+  button:hover {
+    transform: scale(1.1); 
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); 
+  }
+  
+  .ucb-footer {
+    text-align: center;
+    padding: 1em;
+    background-color: #112849;
+    color: white;
+    margin-top: 2em;
+    font-size: 0.9em;
+    border-top: 4px solid #F7BE00;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: slideUpFooter 0.5s 1s forwards; 
+  }
+  
+  @keyframes slideUpFooter {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  
+  .ucb-footer a {
+    color: #F7BE00;
+    text-decoration: none;
+  }
+  
+  .ucb-footer a:hover {
+    text-decoration: underline;
+  }
+  
+  
+  

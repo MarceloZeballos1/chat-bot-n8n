@@ -1,26 +1,25 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Asistente Virtual</title>
-  <style>
-    body { font-family: sans-serif; max-width: 600px; margin: auto; padding: 2em; }
-    .chat { border: 1px solid #ccc; padding: 1em; height: 300px; overflow-y: scroll; background: #f9f9f9; }
-    .message { margin: 0.5em 0; }
-    .user { font-weight: bold; }
-    .form-container { display: flex; gap: 0.5em; margin-top: 1em; }
-    input[type="text"] { flex: 1; padding: 0.5em; }
-    button { padding: 0.5em 1em; }
-  </style>
+  <meta charset="UTF-8" />
+  <title>Asistente Virtual - UCB</title>
+  <link rel="stylesheet" href="style.css" />
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
-  <h1>Asistente Virtual</h1>
-  <div class="chat" id="chat"></div>
-  <form id="form" class="form-container">
-    <input type="text" id="text" placeholder="Escribe un mensaje..." required>
-    <button type="submit">Enviar</button>
-  </form>
+  <header class="ucb-header">
+    <img id="ucb-logo" src="https://sobretodopersonas.ucb.edu.bo/wp-content/uploads/2023/04/logo_ucb_nacional.png" alt="Logo UCB">
+    <h1>Asistente Virtual</h1>
+    <h2>Universidad Católica Boliviana "San Pablo"</h2>
+  </header>
+
+  <main class="chat-container">
+    <div class="chat" id="chat"></div>
+    <form id="form" class="form-container">
+      <input type="text" id="text" placeholder="Escribe un mensaje..." required />
+      <button type="submit">Enviar</button>
+    </form>
+  </main>
 
   <script>
     async function cargarMensajes() {
@@ -28,10 +27,17 @@
       const mensajes = await res.json();
       const chat = document.getElementById('chat');
       chat.innerHTML = '';
-      mensajes.forEach(m => {
-        const html = marked.parse(m.text); // Convierte de Markdown a HTML
-        chat.innerHTML += `<div class="message"><span class="user">${m.user}:</span> ${html}</div>`;
-      });
+      if (mensajes.length === 0) {
+        chat.innerHTML = `
+          <div class="message">
+            <span class="user">IA:</span> 🎓 <em>Hola, soy el Asistente Virtual de la Universidad Católica Boliviana "San Pablo". ¿En qué puedo ayudarte hoy?</em>
+          </div>`;
+      } else {
+        mensajes.forEach(m => {
+          const html = marked.parse(m.text);
+          chat.innerHTML += `<div class="message"><span class="user">${m.user}:</span> ${html}</div>`;
+        });
+      }
       chat.scrollTop = chat.scrollHeight;
     }
 
@@ -45,7 +51,6 @@
       chat.innerHTML += `<div class="message"><span class="user">Tú:</span> ${text}</div>`;
       chat.scrollTop = chat.scrollHeight;
 
-      // Enviar mensaje y mostrar respuesta directamente
       const res = await fetch('http://localhost:3000/messages', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -53,13 +58,17 @@
       });
 
       const respuestaIA = await res.json();
-      const html = marked.parse(respuestaIA.text); // Convierte la respuesta de la IA de Markdown a HTML
+      const html = marked.parse(respuestaIA.text);
       chat.innerHTML += `<div class="message"><span class="user">IA:</span> ${html}</div>`;
       chat.scrollTop = chat.scrollHeight;
     });
 
     cargarMensajes();
-    setInterval(cargarMensajes, 5000); // Sincronizar cada 5 segundos por si hay más usuarios
+    setInterval(cargarMensajes, 5000);
   </script>
+  <footer class="ucb-footer">
+    <p>&copy; 2025 Universidad Católica Boliviana "San Pablo". Todos los derechos reservados.</p>
+    <a href="https://www.ucb.edu.bo" target="_blank">Sitio oficial de la UCB</a>
+  </footer>  
 </body>
 </html>
