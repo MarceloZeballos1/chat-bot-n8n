@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 18569
 
 # Comando para iniciar la app
-CMD ["node", "registros.js"]
+CMD ["node", "index.js"]
