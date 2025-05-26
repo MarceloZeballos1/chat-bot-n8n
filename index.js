@@ -5,7 +5,7 @@ const cors = require('cors');
 const chatRoutes = require('./routes/chatRoutes');
 
 const app = express();
-const PORT = 3000;
+const PORT = 18569;
 
 app.use(cors());
 
