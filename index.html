@@ -5,6 +5,29 @@
   <title>Asistente Virtual - UCB</title>
   <link rel="stylesheet" href="style.css" />
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <style>
+    .recomendaciones {
+      padding: 1em;
+      background-color: #f2f2f2;
+      border-top: 1px solid #ccc;
+    }
+    .recomendaciones h3 {
+      margin-bottom: 0.5em;
+    }
+    .recomendaciones button {
+      margin: 0.2em;
+      padding: 0.5em 1em;
+      font-size: 0.9em;
+      cursor: pointer;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: #707fc2;
+      transition: background-color 0.2s ease;
+    }
+    .recomendaciones button:hover {
+      background-color: #e0e0e0;
+    }
+  </style>
 </head>
 <body>
   <header class="ucb-header">
@@ -21,9 +44,28 @@
     </form>
   </main>
 
+  <section class="recomendaciones">
+    <h3>Preguntas sugeridas:</h3>
+    <div>
+      <button onclick="enviarPregunta('¿Qué carreras ofrece la UCB Tarija?')">¿Qué carreras ofrece la UCB Tarija?</button>
+      <button onclick="enviarPregunta('¿Cómo funciona el reglamento de evaluación?')">¿Cómo funciona el reglamento de evaluación?</button>
+      <button onclick="enviarPregunta('¿En qué consiste la evaluación continua?')">¿En qué consiste la evaluación continua?</button>
+      <button onclick="enviarPregunta('¿Cómo es el examen final?')">¿Cómo es el examen final?</button>
+      <button onclick="enviarPregunta('¿Qué dice el reglamento de suficiencia?')">¿Qué dice el reglamento de suficiencia?</button>
+      <button onclick="enviarPregunta('¿Puedo rendir examen de suficiencia para una materia que ya cursé?')">¿Puedo rendir examen de suficiencia para una materia que ya cursé?</button>
+      <button onclick="enviarPregunta('¿Cuál es la nota mínima para aprobar una materia?')">¿Cuál es la nota mínima para aprobar una materia?</button>
+      <button onclick="enviarPregunta('¿Qué pasa si repruebo una materia tres veces?')">¿Qué pasa si repruebo una materia tres veces?</button>
+    </div>
+  </section>
+
+  <footer class="ucb-footer">
+    <p>&copy; 2025 Universidad Católica Boliviana "San Pablo". Todos los derechos reservados.</p>
+    <a href="https://www.ucb.edu.bo" target="_blank">Sitio oficial de la UCB</a>
+  </footer>
+
   <script>
     async function cargarMensajes() {
-      const res = await fetch('https://backend-chatbot.prod.dtt.tja.ucb.edu.bo/messages');
+      const res = await fetch('http://backend-chatbot.prod.dtt.tja.ucb.edu.bo/messages');
       const mensajes = await res.json();
       const chat = document.getElementById('chat');
       chat.innerHTML = '';
@@ -51,7 +93,7 @@
       chat.innerHTML += `<div class="message"><span class="user">Tú:</span> ${text}</div>`;
       chat.scrollTop = chat.scrollHeight;
 
-      const res = await fetch('https://backend-chatbot.prod.dtt.tja.ucb.edu.bo/messages', {
+      const res = await fetch('http://backend-chatbot.prod.dtt.tja.ucb.edu.bo/messages', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ user: 'Tú', text })
@@ -63,11 +105,13 @@
       chat.scrollTop = chat.scrollHeight;
     });
 
+    function enviarPregunta(pregunta) {
+      const textInput = document.getElementById('text');
+      textInput.value = pregunta;
+      document.getElementById('form').dispatchEvent(new Event('submit'));
+    }
+
     cargarMensajes();
   </script>
-  <footer class="ucb-footer">
-    <p>&copy; 2025 Universidad Católica Boliviana "San Pablo". Todos los derechos reservados.</p>
-    <a href="https://www.ucb.edu.bo" target="_blank">Sitio oficial de la UCB</a>
-  </footer>  
 </body>
 </html>
