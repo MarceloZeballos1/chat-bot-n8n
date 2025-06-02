@@ -5,8 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Azu - Asistente Virtual UCB</title>
   <link rel="stylesheet" href="style.css" />
-  <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#004277" />
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="image/ucb.png">
+  <meta name="theme-color" content="#112849" />
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
@@ -98,5 +99,8 @@
 
     cargarMensajes();
   </script>
+
+  <button id="installBtn" style="display:none; position:fixed; bottom:20px; right:20px; background-color: #004277; color: white; padding: 10px; border: none; border-radius: 5px;">Instalar App</button>
+  <script src="frontend.js"></script>
 </body>
 </html>
