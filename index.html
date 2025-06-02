@@ -2,82 +2,59 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Asistente Virtual - UCB</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Azu - Asistente Virtual UCB</title>
   <link rel="stylesheet" href="style.css" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#004277" />
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <style>
-    .recomendaciones {
-      padding: 1em;
-      background-color: #f2f2f2;
-      border-top: 1px solid #ccc;
-    }
-    .recomendaciones h3 {
-      margin-bottom: 0.5em;
-    }
-    .recomendaciones button {
-      margin: 0.2em;
-      padding: 0.5em 1em;
-      font-size: 0.9em;
-      cursor: pointer;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      background-color: #707fc2;
-      transition: background-color 0.2s ease;
-    }
-    .recomendaciones button:hover {
-      background-color: #e0e0e0;
-    }
-  </style>
 </head>
 <body>
-  <header class="ucb-header">
-    <img id="ucb-logo" src="https://sobretodopersonas.ucb.edu.bo/wp-content/uploads/2023/04/logo_ucb_nacional.png" alt="Logo UCB">
-    <h1>Asistente Virtual</h1>
-    <h2>Universidad Católica Boliviana "San Pablo"</h2>
-  </header>
+  <div class="top-bar">
+    <!--<img src="image/azu.png" alt="Azu" class="azu-logo" />-->
+    <div class="title">
+      <h1>Azu</h1>
+      <p>Tu asistente virtual UCB</p>
+    </div>
+  </div>
 
-  <main class="chat-container">
-    <div class="chat" id="chat"></div>
-    <form id="form" class="form-container">
-      <input type="text" id="text" placeholder="Escribe un mensaje..." required />
+  <main class="container">
+    <section id="chat" class="chat-box">
+      <!-- Mensajes aquí -->
+    </section>
+
+    <form id="form" class="chat-form">
+      <input type="text" id="text" placeholder="Escribe tu pregunta para Azu..." required />
       <button type="submit">Enviar</button>
+      <div class="tooltip-container">
+        <button type="button" id="preguntasBtn" class="preguntas-btn" onclick="togglePreguntas()">¿No sabes qué preguntar?</button>
+        <div id="tooltip" class="tooltip hidden">
+          <button onclick="insertPregunta('¿Qué carreras ofrece la UCB Tarija?')">¿Qué carreras ofrece la UCB Tarija?</button>
+          <button onclick="insertPregunta('¿Cómo funciona el reglamento de evaluación?')">¿Cómo funciona el reglamento de evaluación?</button>
+          <button onclick="insertPregunta('¿En qué consiste la evaluación continua?')">¿En qué consiste la evaluación continua?</button>
+          <button onclick="insertPregunta('¿Puedo rendir examen de suficiencia para una materia que ya cursé?')">¿Examen de suficiencia?</button>
+        </div>
+      </div>
     </form>
   </main>
 
-  <section class="recomendaciones">
-    <h3>Preguntas sugeridas:</h3>
-    <div>
-      <button onclick="enviarPregunta('¿Qué carreras ofrece la UCB Tarija?')">¿Qué carreras ofrece la UCB Tarija?</button>
-      <button onclick="enviarPregunta('¿Cómo funciona el reglamento de evaluación?')">¿Cómo funciona el reglamento de evaluación?</button>
-      <button onclick="enviarPregunta('¿En qué consiste la evaluación continua?')">¿En qué consiste la evaluación continua?</button>
-      <button onclick="enviarPregunta('¿Cómo es el examen final?')">¿Cómo es el examen final?</button>
-      <button onclick="enviarPregunta('¿Qué dice el reglamento de suficiencia?')">¿Qué dice el reglamento de suficiencia?</button>
-      <button onclick="enviarPregunta('¿Puedo rendir examen de suficiencia para una materia que ya cursé?')">¿Puedo rendir examen de suficiencia para una materia que ya cursé?</button>
-      <button onclick="enviarPregunta('¿Cuál es la nota mínima para aprobar una materia?')">¿Cuál es la nota mínima para aprobar una materia?</button>
-      <button onclick="enviarPregunta('¿Qué pasa si repruebo una materia tres veces?')">¿Qué pasa si repruebo una materia tres veces?</button>
-    </div>
-  </section>
-
-  <footer class="ucb-footer">
-    <p>&copy; 2025 Universidad Católica Boliviana "San Pablo". Todos los derechos reservados.</p>
-    <a href="https://www.ucb.edu.bo" target="_blank">Sitio oficial de la UCB</a>
-  </footer>
-
   <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('serviceWorker.js').catch(console.error);
+    }
+
     async function cargarMensajes() {
       const res = await fetch('https://backend-chatbot.prod.dtt.tja.ucb.edu.bo/messages');
       const mensajes = await res.json();
       const chat = document.getElementById('chat');
       chat.innerHTML = '';
+
       if (mensajes.length === 0) {
-        chat.innerHTML = `
-          <div class="message">
-            <span class="user">IA:</span> 🎓 <em>Hola, soy el Asistente Virtual de la Universidad Católica Boliviana "San Pablo". ¿En qué puedo ayudarte hoy?</em>
-          </div>`;
+        chat.innerHTML = `<div class="msg azu"><em>👋 ¡Hola! Soy <strong>Azu</strong>, tu asistente virtual. ¿En qué puedo ayudarte?</em></div>`;
       } else {
         mensajes.forEach(m => {
           const html = marked.parse(m.text);
-          chat.innerHTML += `<div class="message"><span class="user">${m.user}:</span> ${html}</div>`;
+          chat.innerHTML += `<div class="msg ${m.user === 'Tú' ? 'user' : 'azu'}"><strong>${m.user === 'Tú' ? 'Tú' : 'Azu'}:</strong> ${html}</div>`;
         });
       }
       chat.scrollTop = chat.scrollHeight;
@@ -90,7 +67,7 @@
       textInput.value = '';
 
       const chat = document.getElementById('chat');
-      chat.innerHTML += `<div class="message"><span class="user">Tú:</span> ${text}</div>`;
+      chat.innerHTML += `<div class="msg user"><strong>Tú:</strong> ${text}</div>`;
       chat.scrollTop = chat.scrollHeight;
 
       const res = await fetch('https://backend-chatbot.prod.dtt.tja.ucb.edu.bo/messages', {
@@ -101,14 +78,22 @@
 
       const respuestaIA = await res.json();
       const html = marked.parse(respuestaIA.text);
-      chat.innerHTML += `<div class="message"><span class="user">IA:</span> ${html}</div>`;
+      chat.innerHTML += `<div class="msg azu"><strong>Azu:</strong> ${html}</div>`;
       chat.scrollTop = chat.scrollHeight;
     });
 
-    function enviarPregunta(pregunta) {
-      const textInput = document.getElementById('text');
-      textInput.value = pregunta;
-      document.getElementById('form').dispatchEvent(new Event('submit'));
+    function insertPregunta(pregunta) {
+      document.getElementById('text').value = pregunta;
+      document.getElementById('text').focus();
+    }
+
+    function togglePreguntas() {
+      const tooltip = document.getElementById('tooltip');
+      tooltip.classList.remove('hidden');
+      clearTimeout(window.tooltipTimeout);
+      window.tooltipTimeout = setTimeout(() => {
+        tooltip.classList.add('hidden');
+      }, 5000);
     }
 
     cargarMensajes();
