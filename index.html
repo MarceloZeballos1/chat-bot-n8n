@@ -45,17 +45,17 @@
     }
 
     async function cargarMensajes() {
-      const res = await fetch('https://backend-chatbot.prod.dtt.tja.ucb.edu.bo');
+      const res = await fetch('https://backend-chatbot.prod.dtt.tja.ucb.edu.bo/messages');
       const mensajes = await res.json();
       const chat = document.getElementById('chat');
       chat.innerHTML = '';
 
       if (mensajes.length === 0) {
-        chat.innerHTML = <div class="msg azu"><em>👋 ¡Hola! Soy <strong>Azu</strong>, tu asistente virtual. ¿En qué puedo ayudarte?</em></div>;
+        chat.innerHTML = `<div class="msg azu"><em>👋 ¡Hola! Soy <strong>Azu</strong>, tu asistente virtual. ¿En qué puedo ayudarte?</em></div>`;
       } else {
         mensajes.forEach(m => {
           const html = marked.parse(m.text);
-          chat.innerHTML += <div class="msg ${m.user === 'Tú' ? 'user' : 'azu'}"><strong>${m.user === 'Tú' ? 'Tú' : 'Azu'}:</strong> ${html}</div>;
+          chat.innerHTML += `<div class="msg ${m.user === 'Tú' ? 'user' : 'azu'}"><strong>${m.user === 'Tú' ? 'Tú' : 'Azu'}:</strong> ${html}</div>`;
         });
       }
       chat.scrollTop = chat.scrollHeight;
@@ -68,10 +68,10 @@
       textInput.value = '';
 
       const chat = document.getElementById('chat');
-      chat.innerHTML += <div class="msg user"><strong>Tú:</strong> ${text}</div>;
+      chat.innerHTML += `<div class="msg user"><strong>Tú:</strong> ${text}</div>`;
       chat.scrollTop = chat.scrollHeight;
 
-      const res = await fetch('https://backend-chatbot.prod.dtt.tja.ucb.edu.bo', {
+      const res = await fetch('https://backend-chatbot.prod.dtt.tja.ucb.edu.bo/messages', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ user: 'Tú', text })
@@ -79,7 +79,7 @@
 
       const respuestaIA = await res.json();
       const html = marked.parse(respuestaIA.text);
-      chat.innerHTML += <div class="msg azu"><strong>Azu:</strong> ${html}</div>;
+      chat.innerHTML += `<div class="msg azu"><strong>Azu:</strong> ${html}</div>`;
       chat.scrollTop = chat.scrollHeight;
     });
 
