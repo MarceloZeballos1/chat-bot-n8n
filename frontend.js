@@ -1,4 +1,10 @@
 // frontend.js
+// Generar un userId único y guardarlo en localStorage
+let userId = localStorage.getItem('userId');
+if (!userId) {
+  userId = crypto.randomUUID(); // Genera un UUID moderno
+  localStorage.setItem('userId', userId);
+}
 
 // Registrar el Service Worker para PWA
 if ('serviceWorker' in navigator) {
