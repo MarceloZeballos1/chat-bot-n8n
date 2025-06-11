@@ -47,7 +47,7 @@
   const userId = localStorage.getItem('userId'); // ✅ Obtener userId
 
   async function cargarMensajes() {
-    const res = await fetch(`https://backend-chatbot.prod.dtt.tja.ucb.edu.bo/messages?userId=${userId}`); // ✅ Usar userId en el fetch
+    const res = await fetch(`https://backend-chatbot.prod.dtt.tja.ucb.edu.bo/ia-chat?userId=${userId}`); // ✅ Usar userId en el fetch
     const mensajes = await res.json();
     const chat = document.getElementById('chat');
     chat.innerHTML = '';
@@ -73,7 +73,7 @@
     chat.innerHTML += `<div class="msg user"><strong>Tú:</strong> ${text}</div>`;
     chat.scrollTop = chat.scrollHeight;
 
-    const res = await fetch('https://backend-chatbot.prod.dtt.tja.ucb.edu.bo/messages', {
+    const res = await fetch('https://backend-chatbot.prod.dtt.tja.ucb.edu.bo/ia-chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ userId, user: 'Tú', text }) // ✅ Incluir userId en el cuerpo
