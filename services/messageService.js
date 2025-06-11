@@ -1,28 +1,24 @@
 class MessageService {
-  constructor() {
-    this.messagesByUser = new Map(); // Map<userId, message[]>
-    this.currentId = 1;
-  }
-
-  getAllMessages(userId) {
-    return this.messagesByUser.get(userId) || [];
-  }
-
-  addMessage({ userId, user, text }) {
-    const message = {
-      id: this.currentId++,
-      user,
-      text,
-      timestamp: new Date().toISOString(),
-    };
-
-    if (!this.messagesByUser.has(userId)) {
-      this.messagesByUser.set(userId, []);
+    constructor() {
+      this.messages = [];
+      this.currentId = 1;
     }
-
-    this.messagesByUser.get(userId).push(message);
-    return message;
+  
+    getAllMessages() {
+      return this.messages;
+    }
+  
+    addMessage({ user, text }) {
+      const message = {
+        id: this.currentId++,
+        user,
+        text,
+        timestamp: new Date().toISOString(),
+      };
+      this.messages.push(message);
+      return message;
+    }
   }
-}
-
-module.exports = MessageService;
+  
+  module.exports = MessageService;
+  

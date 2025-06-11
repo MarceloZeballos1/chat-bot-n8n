@@ -40,68 +40,65 @@
   </main>
 
   <script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('serviceWorker.js').catch(console.error);
-  }
-
-  const userId = localStorage.getItem('userId'); // ✅ Obtener userId
-
-  async function cargarMensajes() {
-    const res = await fetch(`https://backend-chatbot.prod.dtt.tja.ucb.edu.bo/ia-chat?userId=${userId}`); // ✅ Usar userId en el fetch
-    const mensajes = await res.json();
-    const chat = document.getElementById('chat');
-    chat.innerHTML = '';
-
-    if (mensajes.length === 0) {
-      chat.innerHTML = `<div class="msg azu"><em>👋 ¡Hola! Soy <strong>Azu</strong>, tu asistente virtual. ¿En qué puedo ayudarte?</em></div>`;
-    } else {
-      mensajes.forEach(m => {
-        const html = marked.parse(m.text);
-        chat.innerHTML += `<div class="msg ${m.user === 'Tú' ? 'user' : 'azu'}"><strong>${m.user === 'Tú' ? 'Tú' : 'Azu'}:</strong> ${html}</div>`;
-      });
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('serviceWorker.js').catch(console.error);
     }
-    chat.scrollTop = chat.scrollHeight;
-  }
 
-  document.getElementById('form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const textInput = document.getElementById('text');
-    const text = textInput.value;
-    textInput.value = '';
+    async function cargarMensajes() {
+      const res = await fetch('https://backend-chatbot.prod.dtt.tja.ucb.edu.bo/messages');
+      const mensajes = await res.json();
+      const chat = document.getElementById('chat');
+      chat.innerHTML = '';
 
-    const chat = document.getElementById('chat');
-    chat.innerHTML += `<div class="msg user"><strong>Tú:</strong> ${text}</div>`;
-    chat.scrollTop = chat.scrollHeight;
+      if (mensajes.length === 0) {
+        chat.innerHTML = <div class="msg azu"><em>👋 ¡Hola! Soy <strong>Azu</strong>, tu asistente virtual. ¿En qué puedo ayudarte?</em></div>;
+      } else {
+        mensajes.forEach(m => {
+          const html = marked.parse(m.text);
+          chat.innerHTML += <div class="msg ${m.user === 'Tú' ? 'user' : 'azu'}"><strong>${m.user === 'Tú' ? 'Tú' : 'Azu'}:</strong> ${html}</div>;
+        });
+      }
+      chat.scrollTop = chat.scrollHeight;
+    }
 
-    const res = await fetch('https://backend-chatbot.prod.dtt.tja.ucb.edu.bo/ia-chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId, user: 'Tú', text }) // ✅ Incluir userId en el cuerpo
+    document.getElementById('form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const textInput = document.getElementById('text');
+      const text = textInput.value;
+      textInput.value = '';
+
+      const chat = document.getElementById('chat');
+      chat.innerHTML += <div class="msg user"><strong>Tú:</strong> ${text}</div>;
+      chat.scrollTop = chat.scrollHeight;
+
+      const res = await fetch('https://backend-chatbot.prod.dtt.tja.ucb.edu.bo/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user: 'Tú', text })
+      });
+
+      const respuestaIA = await res.json();
+      const html = marked.parse(respuestaIA.text);
+      chat.innerHTML += <div class="msg azu"><strong>Azu:</strong> ${html}</div>;
+      chat.scrollTop = chat.scrollHeight;
     });
 
-    const respuestaIA = await res.json();
-    const html = marked.parse(respuestaIA.text);
-    chat.innerHTML += `<div class="msg azu"><strong>Azu:</strong> ${html}</div>`;
-    chat.scrollTop = chat.scrollHeight;
-  });
+    function insertPregunta(pregunta) {
+      document.getElementById('text').value = pregunta;
+      document.getElementById('text').focus();
+    }
 
-  function insertPregunta(pregunta) {
-    document.getElementById('text').value = pregunta;
-    document.getElementById('text').focus();
-  }
+    function togglePreguntas() {
+      const tooltip = document.getElementById('tooltip');
+      tooltip.classList.remove('hidden');
+      clearTimeout(window.tooltipTimeout);
+      window.tooltipTimeout = setTimeout(() => {
+        tooltip.classList.add('hidden');
+      }, 5000);
+    }
 
-  function togglePreguntas() {
-    const tooltip = document.getElementById('tooltip');
-    tooltip.classList.remove('hidden');
-    clearTimeout(window.tooltipTimeout);
-    window.tooltipTimeout = setTimeout(() => {
-      tooltip.classList.add('hidden');
-    }, 5000);
-  }
-
-  cargarMensajes();
-</script>
-
+    cargarMensajes();
+  </script>
 
   <button id="installBtn" style="display:none; position:fixed; bottom:20px; right:20px; background-color: #004277; color: white; padding: 10px; border: none; border-radius: 5px;">Instalar App</button>
   <script src="frontend.js"></script>
