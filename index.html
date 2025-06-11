@@ -45,7 +45,7 @@
     }
 
     async function cargarMensajes() {
-      const res = await fetch('https://backend-chatbot.prod.dtt.tja.ucb.edu.bo/messages');
+      const res = await fetch('https://backend-chatbot.prod.dtt.tja.ucb.edu.bo');
       const mensajes = await res.json();
       const chat = document.getElementById('chat');
       chat.innerHTML = '';
@@ -71,7 +71,7 @@
       chat.innerHTML += <div class="msg user"><strong>Tú:</strong> ${text}</div>;
       chat.scrollTop = chat.scrollHeight;
 
-      const res = await fetch('https://backend-chatbot.prod.dtt.tja.ucb.edu.bo/messages', {
+      const res = await fetch('https://backend-chatbot.prod.dtt.tja.ucb.edu.bo', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ user: 'Tú', text })
