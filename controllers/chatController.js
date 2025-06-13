@@ -8,27 +8,37 @@ class ChatController {
   }
 
   getMessages(req, res) {
-    const messages = this.messageService.getAllMessages();
+    const { userId } = req.query;
+    
+    if (!userId) {
+      return res.status(400).json({ error: 'Se requiere userId' });
+    }
+
+    const messages = this.messageService.getMessages(userId);
     res.json(messages);
   }
 
   async postMessage(req, res) {
-    const { user, text } = req.body;
+    const { userId, userName, text } = req.body;
 
-    if (!user || !text) {
-      return res.status(400).json({ error: 'Faltan campos obligatorios (user, text)' });
+    if (!userId || !userName || !text) {
+      return res.status(400).json({ 
+        error: 'Faltan campos obligatorios (userId, userName, text)' 
+      });
     }
 
     const userMessage = this.messageService.addMessage({
-      user,
+      userId,
+      userName,
       text,
     });
 
     try {
-      const webhookResponse = await this.webhookClient.sendMessage(text);
+      const webhookResponse = await this.webhookClient.sendMessage(text, userId);
 
       const botMessage = this.messageService.addMessage({
-        user: 'IA',
+        userId: 'IA',
+        userName: 'Azu',
         text: webhookResponse.text || 'Sin respuesta',
       });
 
